@@ -1,0 +1,74 @@
+# macOS Specific
+.DS_Store
+._*
+.Trashes
+.Spotlight-V100
+.fseventsd
+
+# VS Code Specific
+.vscode/
+.history/
+
+# Python Specific
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Distribution / packaging
+.Python
+build/
+dist/
+*.egg-info/
+*.egg
+lib/
+lib64/
+venv/ # Old virtualenv default name, just in case
+share/
+
+# Virtual Environment
+/.venv/
+
+# Documentation
+docs/_build/
+
+# Python testing and coverage
+.coverage
+.pytest_cache/
+htmlcov/
+.nox/
+
+# MyPy
+.mypy_cache/
+
+# Jupyter Notebook specific
+.ipynb_checkpoints/
+
+# Pip / Package management
+pip-log.txt
+pip.log
+
+# Docker
+pgdata/
+
+# Environment Variables
+.env
+.env.*
+*.env # If you name them like myapp.env
+
+# Logs and temporary files
+*.log
+*.tmp
+*.bak
+*~
+
+# Operating System temporary files
+Thumbs.db 
+ehthumbs.db 
+
+# Custom additions (add any project-specific files you want to ignore)
+# example: /output/
+
+
+# Temporary Python files
+exceptions.py

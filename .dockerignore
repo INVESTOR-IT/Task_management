@@ -1,0 +1,51 @@
+# Виртуальное окружение 
+.venv/
+venv/
+
+# Компилированные файлы Python
+__pycache__/
+*.pyc
+
+# Кэш тестов Pytest
+.pytest_cache/
+
+# Кэш MyPy 
+.mypy_cache/
+
+# Отчеты о покрытии кода
+htmlcov/
+.coverage
+
+# Файлы, специфичные для macOS
+.DS_Store
+.localized
+
+# Thumbnails cache
+.Trashes
+.Spotlight-V100
+ehthumbs.db
+Thumbs.db
+
+# Файлы, специфичные для VS Code
+.vscode/
+
+# Файлы, специфичные для Git
+.git/
+.gitignore
+
+# Файлы с переменными окружения
+#.env
+
+# Логи и временные файлы, не нужные в образе
+*.log
+*.tmp
+
+# Директории сборки и дистрибутивов
+build/
+dist/
+*.egg-info/
+
+# Файлы Docker, которые не должны быть скопированы внутрь образа (они используются Docker-демоном)
+Dockerfile
+docker-compose.yml
+.dockerignore
