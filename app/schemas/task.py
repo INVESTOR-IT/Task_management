@@ -36,7 +36,7 @@ class TaskResponse(TaskBase):
         from_attributes = True
 
 
-class TastStatusResponse(BaseModel):
+class TaskStatusResponse(BaseModel):
     id: UUID
     status: TaskStatus
 
@@ -44,7 +44,7 @@ class TastStatusResponse(BaseModel):
         from_attributes = True
 
 
-class PaginatedTaskResponse(BaseModel):
+class PaginatedTasksResponse(BaseModel):
     total: int
     page: int
     page_size: int
