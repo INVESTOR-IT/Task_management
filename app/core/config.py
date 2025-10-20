@@ -5,6 +5,8 @@ import sys
 
 
 class Settings(BaseSettings):
+    API_V1_STR: str = '/api/v1'
+
     DATABASE_URL: str
     AMQP_URL: str
 
