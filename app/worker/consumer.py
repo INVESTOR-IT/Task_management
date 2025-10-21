@@ -147,17 +147,3 @@ async def run_worker():
     finally:
         await RabbitMQConsumer.disconnect()
         logger.info('RabbitMQC завершился')
-
-
-if __name__ == '__main__':
-    from app.db.base import Base
-    from app.db.database import engine
-    Base.metadata.create_all(bind=engine)
-
-    logger.info('Запуск RabbitMQC')
-    try:
-        asyncio.run(run_worker())
-    except KeyboardInterrupt:
-        logger.info('RabbitMQC: Получено прерывание, RabbitMQC завершен')
-    except Exception as err:
-        logger.error(f'RabbitMQC: Ошибка при заупске: {err}', exc_info=True)
