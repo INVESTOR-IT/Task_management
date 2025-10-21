@@ -5,11 +5,25 @@ from app.db.base import Base
 from app.db.database import engine
 from app.worker.consumer import run_worker
 
-Base.metadata.create_all(bind=engine)
-logger.info('Запуск RabbitMQC')
+
+async def init_db_async():
+    try:
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+    except Exception as db_err:
+        logger.error('RabbitMQC: Не удалось инициализировать '
+                     f'базу данных: {db_err}', exc_info=True)
+        raise
+
+
+async def main():
+    # await init_db_async()
+    logger.info('Запуск RabbitMQC')
+    await run_worker()
+
 
 try:
-    asyncio.run(run_worker())
+    asyncio.run(main())
 except KeyboardInterrupt:
     logger.info('RabbitMQC: Получено прерывание, RabbitMQC завершен')
 except Exception as err:

@@ -13,7 +13,13 @@ from app.api.v1 import tasks
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info('Запуск сервера')
-    Base.metadata.create_all(bind=engine)
+    try:
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+        logger.info('База данных инициализирована')
+    except Exception as db_err:
+        logger.error(f'Не удалось инициализировать базу данных: {db_err}', exc_info=True)
+        raise
     try:
         await RabbitMQProducer.connect()
     except Exception as err:

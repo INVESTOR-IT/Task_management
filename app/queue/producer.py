@@ -26,7 +26,7 @@ class RabbitMQProducer:
 
                 for priority in TaskPriority:
                     queue_name = cls._get_queue_name(priority)
-                    cls._queues[priority] = cls._channel.declare_queue(
+                    cls._queues[priority] = await cls._channel.declare_queue(
                         queue_name,
                         durable=True
                     )

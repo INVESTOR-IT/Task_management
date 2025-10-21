@@ -172,4 +172,4 @@ async def get_task_status(
     if task is None:
         raise HTTPException(status_code=404, detail='Такой задачи нет')
 
-    return task
+    return TaskStatusResponse(status=task.status)

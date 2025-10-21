@@ -80,7 +80,7 @@ class RabbitMQConsumer:
             task = None
             try:
                 payload = json.loads(message.body.decode())
-                task_id = payload.get('task_isd')
+                task_id = payload.get('task_id')
 
                 if not task_id:
                     logger.error(f'Принял сообщение без task.id: {message.body}')
@@ -110,7 +110,7 @@ class RabbitMQConsumer:
                 task.completed_at = datetime.datetime.utcnow()
 
                 if success:
-                    task.status = TaskStatus.CANCELLED
+                    task.status = TaskStatus.COMPLETED
                     task.result = result_or_error
                 else:
                     task.status = TaskStatus.FAILED
