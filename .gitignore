@@ -53,7 +53,6 @@ pgdata/
 
 # Environment Variables
 .env
-.env.*
 *.env # If you name them like myapp.env
 
 # Logs and temporary files
