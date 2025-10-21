@@ -1,9 +1,6 @@
-from aio_pika import RobustChannel, RobustQueue
+from aio_pika import RobustChannel, RobustQueue, connect_robust, Message, DeliveryMode
 
-import aio_pika
-
-import json
-import asyncio
+import json, asyncio
 
 from app.models.task import TaskPriority
 from app.core.config import logger, settings
@@ -21,11 +18,11 @@ class RabbitMQProducer:
     @classmethod
     async def connect(cls):
         if cls.isconnection():
-            logger.info('Подключение к RabbitMQ')
+            logger.info('Подключение к RabbitMQP')
             try:
-                cls._connection = await aio_pika.connect_robust(settings.AMQP_URL)
+                cls._connection = await connect_robust(settings.AMQP_URL)
                 cls._channel = await cls._connection.channel()
-                logger.info('RabbitMQ подключен')
+                logger.info('RabbitMQP подключен')
 
                 for priority in TaskPriority:
                     queue_name = cls._get_queue_name(priority)
@@ -33,20 +30,20 @@ class RabbitMQProducer:
                         queue_name,
                         durable=True
                     )
-                    logger.info(f'Объявлена очередь в RabbitMQ: {queue_name}')
+                    logger.info(f'Объявлена очередь в RabbitMQP: {queue_name}')
             except Exception as err:
-                logger.error(f'Не удалось подключиться к RabbitMQ: {err}')
+                logger.error(f'Не удалось подключиться к RabbitMQP: {err}')
                 cls._connection = None
                 cls._channel = None
                 raise
 
     @classmethod
     async def disconnect(cls):
-        if cls.isconnection():
+        if not cls.isconnection():
             await cls._connection.close()
             cls._connection = None
             cls._channel = None
-            logger.info('RabbitMQ отключен')
+            logger.info('RabbitMQP отключен')
 
     @staticmethod
     def _get_queue_name(priority: TaskPriority) -> str:
@@ -54,12 +51,12 @@ class RabbitMQProducer:
 
     @classmethod
     async def publish_task_message(cls, task_id: str, priority: TaskPriority):
-        if cls.isconnection():
-            logger.info('RabbitMQ не активен, выполняется подключение')
+        if cls._channel is None or cls._channel.is_closed:
+            logger.info('RabbitMQP не активен, выполняется подключение')
             await cls.connect()
 
         if cls._channel is None:
-            logger.info('Не удалось опубликовать сообщение: канал RabbitMQ недоступен.')
+            logger.error('Не удалось опубликовать сообщение: канал RabbitMQP недоступен.')
             raise ConnectionError('Канал RabbitMQ недоступен.')
 
         message_body = json.dumps({'task_id': task_id}).encode('utf-8')
@@ -76,9 +73,9 @@ class RabbitMQProducer:
                 )
 
         await cls._channel.default_exchange.publish(
-            aio_pika.Message(
+            Message(
                 body=message_body,
-                delivery_mode=aio_pika.DeliveryMode.PERSISTENT
+                delivery_mode=DeliveryMode.PERSISTENT
             ),
             routing_key=queue.name
         )
@@ -86,4 +83,14 @@ class RabbitMQProducer:
                     f'помещена в очередь {queue.name}')
 
 
+async def main():
+    await RabbitMQProducer.connect()
+    try:
+        await RabbitMQProducer.publish_task_message('123', TaskPriority.HIGH)
+        await RabbitMQProducer.publish_task_message('456', TaskPriority.MEDIUM)
+    finally:
+        await RabbitMQProducer.disconnect()
 
+
+if __name__ == '__main__':
+    asyncio.run(main())

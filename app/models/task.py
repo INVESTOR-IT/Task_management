@@ -28,7 +28,7 @@ class TaskStatus(str, Enum):
 class Task(Base):
     __tablename__ = 'tasks'
 
-    id: Mapped[int] = mapped_column(
+    id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
         primary_key=True,
         default=uuid.uuid4,
@@ -36,12 +36,12 @@ class Task(Base):
     )
     title: Mapped[str] = mapped_column(String, nullable=False)
     description: Mapped[str] = mapped_column(Text, nullable=True)
-    priority: Mapped[str] = mapped_column(
+    priority: Mapped[TaskPriority] = mapped_column(
         ENUM(TaskPriority, name='task_priority', create_type=True),
         default=TaskPriority.MEDIUM,
         nullable=False
     )
-    status = Mapped[str] = mapped_column(
+    status: Mapped[TaskStatus] = mapped_column(
         ENUM(TaskStatus, name='task_status', create_type=True),
         default=TaskStatus.NEW,
         nullable=False
