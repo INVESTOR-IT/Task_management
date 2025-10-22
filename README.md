@@ -11,6 +11,8 @@
 
 </br>
 
+</br>
+
 ### ТЗ к приложению:
 Основные возможности:
 -	Создание задач через REST API
@@ -46,16 +48,23 @@
 -	DELETE /api/v1/tasks/{task_id} - отмена задачи
 -	GET /api/v1/tasks/{task_id}/status - получение статуса задачи
 
----
+</br>
+
+</br>
 
 ### Реализация проекта
 Я разделил задачу на два основных сервиса:<br>
 1. API Service (FastAPI): Обрабатывает входящие HTTP-запросы (создание, получение, отмена задач). Он записывает начальное состояние задачи в базу данных и отправляет сообщение в RabbitMQ для асинхронной обработки.
 2. Worker Service (Python Consumer): Постоянно слушает RabbitMQ, забирает сообщения о задачах, обрабатывает их (имитируем работу) и обновляет статус и результат задачи в базе данных.
 
+</br>
+
+</br>
 
 ### Тех стек
 `Python, FastAPI, Uvicorn, PostgreSQL, SQLAlchemy, Alembic, RabbitMQ, Aio_pika, Pytest, Docker и Docker Compose`
+
+</br>
 
 </br>
 
@@ -99,7 +108,9 @@
 └── README.md                        # Документация проекта
 ```
 
----
+</br>
+
+</br>
 
 ## Развертывание 
 
@@ -118,7 +129,10 @@ cp .env.example .env
 docker-compose up --build
 ```
 Последним развернется workeк, после приложением можно будет пользоваться 
-___
+
+</br>
+
+</br>
 
 ## Эндпоинты 
 
@@ -128,7 +142,7 @@ http://localhost:8000
 ```
 Произойдет редирект (307) на OpenAPI
 
-</br>
+---
 
 __Создание задачи__ (POST)
 ```
@@ -159,7 +173,7 @@ http://localhost/api/v1/tasks
 }
 ```
 
-</br>
+---
 
 __Список задач с пагинацией__ (GET)
 ```
@@ -183,14 +197,14 @@ http://localhost/api/v1/tasks
 }
 ```
 
-</br>
+---
 
 __Информация о задаче__ (GET)
 ```
 http://localhost:8000/api/v1/tasks/{task_id}
 ```
 
-Пример ответа:
+Пример ответа
 ```
 {
     "title": "Тренировка",
@@ -206,7 +220,7 @@ http://localhost:8000/api/v1/tasks/{task_id}
 }
 ```
 
-</br>
+---
 
 __Отмена задачи__ (DELETE)
 ```
@@ -219,7 +233,7 @@ http://localhost:8000/api/v1/tasks/{task_id}
 }
 ```
 
-</br>
+---
 
 __Информация о статусе задачи__ (GET)
 ```
@@ -232,6 +246,8 @@ http://localhost:8000/api/v1/tasks/{task_id}/status
     "status": "COMPLETED"
 }
 ```
+
+</br>
 
 </br>
 
