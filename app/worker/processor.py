@@ -13,10 +13,10 @@ async def process_task_logic(task_id: str) -> tuple[bool, str]:
     await asyncio.sleep(work_duration := random.randint(3, 20))
 
     if random.random() < 0.8:
-        result = f'Задача {task_id} завершена за {work_duration} сек.'
+        result = f'Задача завершена за {work_duration} сек.'
         logger.info(result)
         return True, result
     else:
-        error_message = f'Задача {task_id} не завершилась за {work_duration}'
+        error_message = f'Задача не завершилась за {work_duration}'
         logger.error(error_message)
         return False, error_message

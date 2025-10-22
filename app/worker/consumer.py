@@ -85,7 +85,7 @@ class RabbitMQConsumer:
                 if not task_id:
                     logger.error(f'Принял сообщение без task.id: {message.body}')
                     return
-                logger.info(f'Принял задачу {task_id} из {message.queue.name}')
+                logger.info(f'Принял задачу {task_id} из {message.routing_key}')
 
                 task = await session.execute(select(Task).where(Task.id == task_id))
                 task = task.scalar_one_or_none()
@@ -105,19 +105,21 @@ class RabbitMQConsumer:
                 task.status = TaskStatus.IN_PROGRESS
                 task.started_at = datetime.datetime.utcnow()
                 await session.commit()
-                await session.refresh()
+                await session.refresh(task)
                 success, result_or_error = await process_task_logic(task_id)
                 task.completed_at = datetime.datetime.utcnow()
 
                 if success:
                     task.status = TaskStatus.COMPLETED
                     task.result = result_or_error
+                    task.error_info = None
                 else:
                     task.status = TaskStatus.FAILED
                     task.result = result_or_error
+                    task.result = None
 
                 await session.commit()
-                await session.refresh()
+                await session.refresh(task)
                 logger.info(f'Статус задачи {task_id} обновлен до {task.status.value}')
 
             except json.JSONDecodeError as json_err:
@@ -131,7 +133,7 @@ class RabbitMQConsumer:
                     task.error_info = f'RabbitMQC: внутренняя ошибка {err}'
                     task.completed_at = datetime.datetime.utcnow()
                     await session.commit()
-                    await session.refresh()
+                    await session.refresh(task)
             finally:
                 await session.close()
 

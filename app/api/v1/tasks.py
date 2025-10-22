@@ -51,7 +51,7 @@ async def create_task(
         database_task.status = TaskStatus.FAILED
         database_task.error_info = f'Не удалось поставить задачу в очередь: {err}'
         await session.commit()
-        await session.refresh()
+        await session.refresh(database_task)
         raise HTTPException(
             status_code=500,
             detail=f'Не удалось поставить задачу в очередь {err}'
@@ -172,4 +172,4 @@ async def get_task_status(
     if task is None:
         raise HTTPException(status_code=404, detail='Такой задачи нет')
 
-    return TaskStatusResponse(status=task.status)
+    return task
