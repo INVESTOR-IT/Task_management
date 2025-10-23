@@ -1,4 +1,3 @@
-version: '3.8'
 
 services:
   db:
@@ -77,6 +76,19 @@ services:
         condition: service_healthy
       api:
         condition: service_healthy
+
+  test:
+    build:
+      context: .
+      dockerfile: DockerFile.api
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    command: [ "pytest", "tests/integration/test_tasks_api.py" ]
 
 volumes:
   pgdata:
