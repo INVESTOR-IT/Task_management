@@ -9,7 +9,7 @@ import json
 from app.core.config import logger, settings
 from app.models.task import TaskPriority, TaskStatus, Task
 from app.db.database import SessionLocal
-from app.servisec_worker import process_task_logic
+from app.servisec_worker.processor import process_task_logic
 
 
 class RabbitMQConsumer:
@@ -71,7 +71,7 @@ class RabbitMQConsumer:
                 queue.consume(cls._process_message, no_ack=False)
             )
             cls._consumers.append(consumer_task)
-            await asyncio.Future()
+        await asyncio.Future()
 
     @classmethod
     async def _process_message(cls, message: IncomingMessage):
