@@ -9,7 +9,7 @@ import json
 from app.core.config import logger, settings
 from app.models.task import TaskPriority, TaskStatus, Task
 from app.db.database import SessionLocal
-from app.worker.processor import process_task_logic
+from app.servisec_worker import process_task_logic
 
 
 class RabbitMQConsumer:
