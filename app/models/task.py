@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy import String, DateTime, Text, UUID
+from sqlalchemy import String, DateTime, Text, UUID, Index
 from sqlalchemy.dialects.postgresql import ENUM
 
 from enum import Enum
@@ -27,6 +27,7 @@ class TaskStatus(str, Enum):
 
 class Task(Base):
     __tablename__ = 'tasks'
+    __table_args__ = (Index('ix_tasks_status_priority', 'status', 'priority'),)
 
     id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
